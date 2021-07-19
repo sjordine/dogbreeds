@@ -8,13 +8,13 @@
 import UIKit
 
 class DogListViewController: UIViewController {
-
+    
     @IBOutlet weak var dogList: UICollectionView!
     
-    enum Section {
+    enum Section: String {
         case main
     }
-
+    
     var dataSource: UICollectionViewDiffableDataSource<Section, DogBreed>! = nil
     var dogServices = DogServices()
     
@@ -23,7 +23,7 @@ class DogListViewController: UIViewController {
         
         configureHierarchy()
         configureDataSource()
-       
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -32,14 +32,17 @@ class DogListViewController: UIViewController {
             if case let .success(breeds) = result {
                 var snapshot = NSDiffableDataSourceSnapshot<Section, DogBreed>()
                 snapshot.appendSections([.main])
-                snapshot.appendItems(breeds)
+                snapshot.appendItems(breeds, toSection: .main)
+                //The data source update must be done in the main queue
                 OperationQueue.main.addOperation {
-                    self.dataSource.apply(snapshot, animatingDifferences: true)
+                    self.dataSource.apply(snapshot, animatingDifferences: false)
                 }
             }
         }
+        
+        
     }
-
+    
 }
 
 extension DogListViewController {
@@ -66,13 +69,16 @@ extension DogListViewController {
         dataSource = UICollectionViewDiffableDataSource<Section, DogBreed>(collectionView: dogList) {
             (collectionView: UICollectionView, indexPath: IndexPath, identifier: DogBreed) -> UICollectionViewCell? in
             
-            return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: identifier)
+            return collectionView.dequeueConfiguredReusableCell(using: cellRegistration,
+                                                                for: indexPath,
+                                                                item: identifier)
         }
-
+        
         // initial data
         var snapshot = NSDiffableDataSourceSnapshot<Section, DogBreed>()
         snapshot.appendSections([.main])
         dataSource.apply(snapshot, animatingDifferences: false)
+        
     }
-
+    
 }
