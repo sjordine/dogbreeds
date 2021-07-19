@@ -13,14 +13,10 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         let services = DogServices()
-        services.breeds { result in
-            if case let Result.success(breeds) = result {
-                let result = Dictionary.init(grouping: breeds, by: { breed in
-                    breed.group
-                })
-                print(result.keys)
+        services.breedGroups { result in
+            if case let .success(groups) = result {
+                print(groups.keys)
             }
-           
         }
     }
 

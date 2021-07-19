@@ -34,5 +34,22 @@ struct DogServices {
         }
         
     }
+    
+    
+    func breedGroups(completion: @escaping (_ result: Result<[String:[DogBreed]], Error>) -> Void)  {
+        breeds { result in
+            switch result {
+            case .success(let breeds):
+                let breedGroups = Dictionary(grouping: breeds) { breed in
+                    breed.group ?? ""
+                }
+                completion(.success(breedGroups))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    
 
 }
