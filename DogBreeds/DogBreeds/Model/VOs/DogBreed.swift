@@ -7,13 +7,18 @@
 
 import Foundation
 
-struct DogBreed: Codable, Identifiable {
+struct DogBreed: Codable, Identifiable, Hashable {
+   
+    static func == (lhs: DogBreed, rhs: DogBreed) -> Bool {
+        lhs.id == rhs.id
+    }
     
+
     enum CodingKeys: String, CodingKey {
         case bredFor = "bred_for"
         case group = "breed_group"
         case height
-        case id
+        case id = "id"
         case lifeSpan = "life_span"
         case name
         case origin

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct DogImage: Codable, Identifiable {
+struct DogImage: Codable, Identifiable, Hashable {
     var id: String
     var height: Int
     var width: Int

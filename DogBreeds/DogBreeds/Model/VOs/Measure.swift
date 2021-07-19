@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Measure: Codable {
+struct Measure: Codable, Hashable {
     var imperial: String
     var metric: String
 }
