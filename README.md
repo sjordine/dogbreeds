@@ -11,4 +11,4 @@ import Foundation
 let apiKey = "<YOUR API KEY>"
 ~~~
 
-In order to get an API Key register  in []"The Dog API"](https://thedogapi.com)
+In order to get an API Key register  in ["The Dog API"](https://thedogapi.com)
