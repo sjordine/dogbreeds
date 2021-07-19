@@ -51,7 +51,7 @@ extension DogListViewController {
     }
     
     private func createLayout() -> UICollectionViewLayout {
-        let config = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
+        let config = UICollectionLayoutListConfiguration(appearance: .plain)
         return UICollectionViewCompositionalLayout.list(using: config)
     }
 }
