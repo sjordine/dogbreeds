@@ -11,6 +11,10 @@
  *.perspectivev3
  !default.perspectivev3
 
+## API Key code
+DogBreeds/DogBreeds/Mechanisms/API/APIKey.swift
+
+
 ## Obj-C/Swift specific
 *.hmap
 
