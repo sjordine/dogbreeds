@@ -8,5 +8,17 @@
 import UIKit
 
 class BreedCell: UICollectionViewCell {
+    @IBOutlet weak var image: UIImageView!
+    @IBOutlet weak var name: UILabel!
     
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        self.layer.cornerRadius = 10.0
+    }
+    
+    override func prepareForReuse() {
+        self.image.image = UIImage(named: "placeholder")
+    }
+    
+
 }

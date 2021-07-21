@@ -53,14 +53,14 @@ extension DogListViewController {
         
         let sectionProvider = { (sectionIndex: Int, layoutEnvironment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? in
             
-            let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
+            let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1))
             let item = NSCollectionLayoutItem(layoutSize: itemSize)
             item.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5)
-            let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.28), heightDimension: .fractionalWidth(0.2))
+            let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.4), heightDimension: .fractionalWidth(0.4))
             let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
             let section = NSCollectionLayoutSection(group: group)
             section.interGroupSpacing = 10
-            section.orthogonalScrollingBehavior = .continuous
+            section.orthogonalScrollingBehavior = .continuousGroupLeadingBoundary
             section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
             
             let globalHeaderSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(44))
@@ -85,6 +85,18 @@ extension DogListViewController {
         
 
         let cellRegistration = UICollectionView.CellRegistration<BreedCell,DogBreed>(cellNib: UINib(nibName: "BreedCell", bundle: nil)) { cell, indexPath, item in
+            
+            cell.name.text = item.name
+            
+            DispatchQueue.global().async {
+                if let url = URL(string: item.image.url),
+                   let data = try? Data(contentsOf: url),
+                   let image = UIImage(data: data) {
+                    DispatchQueue.main.async {
+                        cell.image.image = image
+                    }
+                }
+            }
             
         }
         
