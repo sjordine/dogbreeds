@@ -34,7 +34,9 @@ class DogListViewController: UIViewController {
                     let breeds = breedGroups[group] ?? []
                     snapshot.appendItems(breeds, toSection: group)
                 }
-                dataSource.apply(snapshot, animatingDifferences: false)
+                OperationQueue.main.addOperation {
+                    dataSource.apply(snapshot, animatingDifferences: false)
+                }
             }
         }
         
@@ -48,8 +50,12 @@ extension DogListViewController {
     }
     
     private func createLayout() -> UICollectionViewLayout {
-        let config = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
-        return UICollectionViewCompositionalLayout.list(using: config)
+        var config = UICollectionLayoutListConfiguration(appearance: .plain)
+        config.headerMode = .supplementary
+        
+        var layout =  UICollectionViewCompositionalLayout.list(using: config)
+    
+        return layout
     }
 }
 
@@ -63,12 +69,29 @@ extension DogListViewController {
             cell.contentConfiguration = content
         }
         
+        
+        let headerRegistration = UICollectionView.SupplementaryRegistration<HeaderCell>(supplementaryNib: UINib(nibName: "HeaderCell", bundle: nil), elementKind: "header") { (supplementaryView, sectionName, indexPath) in
+            
+            let identifiers = self.dataSource.snapshot().sectionIdentifiers
+            
+            
+            supplementaryView.groupTitle.text = identifiers[indexPath.section]
+
+        }
+        
+        
         dataSource = UICollectionViewDiffableDataSource<String, DogBreed>(collectionView: dogList) {
             (collectionView: UICollectionView, indexPath: IndexPath, identifier: DogBreed) -> UICollectionViewCell? in
+            
+            
             
             return collectionView.dequeueConfiguredReusableCell(using: cellRegistration,
                                                                 for: indexPath,
                                                                 item: identifier)
+        }
+        
+        dataSource.supplementaryViewProvider = { (view, kind, index) in
+            return self.dogList.dequeueConfiguredReusableSupplementary(using: headerRegistration, for: index)
         }
         
         // initial data
