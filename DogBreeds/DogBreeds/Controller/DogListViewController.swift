@@ -34,7 +34,6 @@ class DogListViewController: UIViewController {
                     let breeds = breedGroups[group] ?? []
                     snapshot.appendItems(breeds, toSection: group)
                 }
-                print("Aqui")
                 dataSource.apply(snapshot, animatingDifferences: false)
             }
         }
