@@ -11,11 +11,8 @@ class DogListViewController: UIViewController {
     
     @IBOutlet weak var dogList: UICollectionView!
     
-    enum Section: String {
-        case main
-    }
     
-    var dataSource: UICollectionViewDiffableDataSource<Section, DogBreed>! = nil
+    var dataSource: UICollectionViewDiffableDataSource<String, DogBreed>! = nil
     var dogServices = DogServices()
     
     override func viewDidLoad() {
@@ -28,17 +25,20 @@ class DogListViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        dogServices.breeds { result in
-            if case let .success(breeds) = result {
-                var snapshot = NSDiffableDataSourceSnapshot<Section, DogBreed>()
-                snapshot.appendSections([.main])
-                snapshot.appendItems(breeds, toSection: .main)
-                //The data source update must be done in the main queue
-                OperationQueue.main.addOperation {
-                    self.dataSource.apply(snapshot, animatingDifferences: false)
+        
+        dogServices.breedGroups { [self] result in
+            if case let .success(breedGroups) = result {
+                var snapshot = NSDiffableDataSourceSnapshot<String, DogBreed>()
+                snapshot.appendSections(Array<String>(breedGroups.keys))
+                for group in breedGroups.keys {
+                    let breeds = breedGroups[group] ?? []
+                    snapshot.appendItems(breeds, toSection: group)
                 }
+                print("Aqui")
+                dataSource.apply(snapshot, animatingDifferences: false)
             }
         }
+        
     }
     
 }
@@ -49,7 +49,7 @@ extension DogListViewController {
     }
     
     private func createLayout() -> UICollectionViewLayout {
-        let config = UICollectionLayoutListConfiguration(appearance: .plain)
+        let config = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
         return UICollectionViewCompositionalLayout.list(using: config)
     }
 }
@@ -64,7 +64,7 @@ extension DogListViewController {
             cell.contentConfiguration = content
         }
         
-        dataSource = UICollectionViewDiffableDataSource<Section, DogBreed>(collectionView: dogList) {
+        dataSource = UICollectionViewDiffableDataSource<String, DogBreed>(collectionView: dogList) {
             (collectionView: UICollectionView, indexPath: IndexPath, identifier: DogBreed) -> UICollectionViewCell? in
             
             return collectionView.dequeueConfiguredReusableCell(using: cellRegistration,
@@ -73,8 +73,8 @@ extension DogListViewController {
         }
         
         // initial data
-        var snapshot = NSDiffableDataSourceSnapshot<Section, DogBreed>()
-        snapshot.appendSections([.main])
+        var snapshot = NSDiffableDataSourceSnapshot<String, DogBreed>()
+        snapshot.appendSections([])
         dataSource.apply(snapshot, animatingDifferences: false)
         
     }
