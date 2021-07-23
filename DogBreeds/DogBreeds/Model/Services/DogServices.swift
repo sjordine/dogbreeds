@@ -40,8 +40,9 @@ struct DogServices {
         breeds { result in
             switch result {
             case .success(let breeds):
-                let breedGroups = Dictionary(grouping: breeds) { breed in
-                    breed.group ?? ""
+                let breedGroups = Dictionary(grouping: breeds) { breed -> String in
+                    let group = breed.group ?? ""
+                    return group.isEmpty ? "Not defined": group
                 }
                 completion(.success(breedGroups))
             case .failure(let error):
