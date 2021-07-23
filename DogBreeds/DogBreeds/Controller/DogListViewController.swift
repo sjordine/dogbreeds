@@ -65,8 +65,8 @@ extension DogListViewController {
             
             let globalHeaderSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .estimated(44))
             let globalHeader = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: globalHeaderSize, elementKind: "header", alignment: .top)
-                // Set true or false depending on the desired behavior
-                globalHeader.pinToVisibleBounds = true
+            // Set true or false depending on the desired behavior
+            globalHeader.pinToVisibleBounds = true
             
             section.boundarySupplementaryItems = [globalHeader]
             
@@ -83,18 +83,30 @@ extension DogListViewController {
     
     private func configureDataSource() {
         
-
-        let cellRegistration = UICollectionView.CellRegistration<BreedCell,DogBreed>(cellNib: UINib(nibName: "BreedCell", bundle: nil)) { cell, indexPath, item in
+        
+//        let cellRegistration = UICollectionView.CellRegistration<BreedCell,DogBreed>(cellNib: UINib(nibName: "BreedCell", bundle: nil)) { cell, indexPath, item in
+//
+//            cell.name = item.name
+//
+//            DispatchQueue.global().async {
+//                if let url = URL(string: item.image.url),
+//                   let data = try? Data(contentsOf: url),
+//                   let image = UIImage(data: data) {
+//                    cell.image = image
+//                }
+//            }
+//
+//        }
+        
+        let cellRegistration = UICollectionView.CellRegistration<BreedCell,DogBreed> { cell, indexPath, item in
             
-            cell.name.text = item.name
+            cell.name = item.name
             
             DispatchQueue.global().async {
                 if let url = URL(string: item.image.url),
                    let data = try? Data(contentsOf: url),
                    let image = UIImage(data: data) {
-                    DispatchQueue.main.async {
-                        cell.image.image = image
-                    }
+                    cell.image = image
                 }
             }
             
@@ -108,7 +120,7 @@ extension DogListViewController {
             
             
             supplementaryView.groupTitle.text = identifiers[indexPath.section]
-
+            
         }
         
         
